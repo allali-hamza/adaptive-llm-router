@@ -1,0 +1,23 @@
+[project]
+name = "adaptive-llm-router"
+version = "0.1.0"
+description = "Add your description here"
+authors = [
+    { name = "allali-hamza", email = "hamzaallali7002@gmail.com" }
+]
+requires-python = ">=3.12"
+dependencies = [
+    "fastapi>=0.156.4",
+    "numpy>=2.5.4",
+    "pandas>=3.0.6",
+    "pydantic>=2.14.1",
+    "scikit-learn>=1.9.1",
+    "uvicorn>=0.54.0",
+]
+
+[project.scripts]
+adaptive-llm-router = "adaptive_llm_router:main"
+
+[build-system]
+requires = ["uv_build>=0.13.4,<0.14.0"]
+build-backend = "uv_build"
