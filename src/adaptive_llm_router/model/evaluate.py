@@ -1,9 +1,10 @@
 import joblib
 from src.adaptive_llm_router.config import (
-    PROCESSED_DIR, EMBEDDING_FILE, METADATA_FILE, ARTIFACTS_DIR
+    PROCESSED_DIR, EMBEDDING_FILE, METADATA_FILE, ARTIFACTS_DIR, EVALUATION_DIR
 )
 import numpy as np
 import pandas as pd
+import json
 
 from sklearn.metrics import (
     accuracy_score,
@@ -198,3 +199,15 @@ results["latency_sensitivity"] = evaluate_classification(
     y_test=y_latency_sensitivity,
     model_name="latency_sensitivity",
 )
+
+EVALUATION_DIR.mkdir(
+    parents=True,
+    exist_ok=True,
+)
+
+with open(EVALUATION_DIR / "evaluation_results.json","w",) as f:
+    json.dump(
+        results,
+        f,
+        indent=4,
+    )
