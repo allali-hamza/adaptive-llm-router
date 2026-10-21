@@ -1,4 +1,4 @@
-from src.adaptive_llm_router.config import PROCESSED_DIR, RANDOM_STATE, ARTIFACTS_DIR
+from src.adaptive_llm_router.config import PROCESSED_DIR, RANDOM_STATE, ARTIFACTS_DIR, EMBEDDING_FILE, METADATA_FILE
 from sklearn.model_selection import train_test_split
 from sklearn.linear_model import LogisticRegression
 from sklearn.ensemble import GradientBoostingRegressor
@@ -10,16 +10,13 @@ import joblib
 
 def train_models():
 
-    embedding_file = PROCESSED_DIR / "prompt_classifier_dataset_merged_embeddings.npy"
-    metadata_file = PROCESSED_DIR / "prompt_classifier_dataset_merged_metadata.csv"
-
     ARTIFACTS_DIR.mkdir(
         parents=True,
         exist_ok=True,
     )
 
-    df = pd.read_csv(filepath_or_buffer=metadata_file)
-    X = np.load(file=embedding_file)
+    df = pd.read_csv(filepath_or_buffer=METADATA_FILE)
+    X = np.load(file=EMBEDDING_FILE)
 
     # Validate data
     if len(X) != len(df):
@@ -50,7 +47,7 @@ def train_models():
     )
 
 
-    # classify the task_type
+    # task_type
     y_task_type = df["task_type"].to_numpy()
     y_train_task_type = y_task_type[train_idx]
 
@@ -58,7 +55,7 @@ def train_models():
         max_iter=1000,
         random_state=RANDOM_STATE
     )
-
+    print("Training task_type...")
     model_task_type.fit(
         X_train,
         y_train_task_type,
@@ -70,7 +67,7 @@ def train_models():
     )
 
 
-    # the model that computes the difficulty score
+    # difficulty score
     y_difficulty = df["difficulty"].to_numpy()
     y_train_difficulty = y_difficulty[train_idx]
 
@@ -80,7 +77,7 @@ def train_models():
         random_state=RANDOM_STATE,
         max_depth=3
     )
-
+    print("Training difficulty...")
     model_difficulty.fit(
         X_train,
         y_train_difficulty
@@ -102,7 +99,7 @@ def train_models():
         random_state=RANDOM_STATE,
         max_depth=3,
     )
-
+    print("Training required_quality...")
     model_required_quality.fit(
         X_train,
         y_train_required_quality,
@@ -121,8 +118,9 @@ def train_models():
     model_risk_level = LogisticRegression(
         max_iter=1000,
         random_state=RANDOM_STATE,
+        class_weight="balanced"
     )
-
+    print("Training risk_level...")
     model_risk_level.fit(
         X_train,
         y_train_risk_level,
@@ -143,7 +141,7 @@ def train_models():
         random_state=RANDOM_STATE,
         n_jobs=-1,
     )
-
+    print("Training expected_output_tokens...")
     model_expected_output_tokens.fit(
         X_train,
         y_train_expected_output_tokens,
@@ -162,8 +160,9 @@ def train_models():
     model_latency_sensitivity = LogisticRegression(
         max_iter=1000,
         random_state=RANDOM_STATE,
+        class_weight="balanced",
     )
-
+    print("Training latency_sensitivity...")
     model_latency_sensitivity.fit(
         X_train,
         y_train_latency_sensitivity,
@@ -173,8 +172,7 @@ def train_models():
         model_latency_sensitivity,
         ARTIFACTS_DIR / "latency_sensitivity.joblib",
     )
-
-    print("All models trained and saved successfully!")
+    print("Training complete")
 
 
 if __name__ == "__main__":
