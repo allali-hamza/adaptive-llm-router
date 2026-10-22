@@ -1,6 +1,6 @@
-from src.adaptive_llm_router.config import ARTIFACTS_DIR
-from src.adaptive_llm_router.data.embedding import prompt_to_embedding
-from src.adaptive_llm_router.model.embedding_model import embedding_model
+from adaptive_llm_router.config import ARTIFACTS_DIR
+from adaptive_llm_router.data.embedding import prompt_to_embedding
+from adaptive_llm_router.model.embedding_model import embedding_model
 import numpy as np
 import joblib
 
@@ -39,6 +39,11 @@ def difficulty_to_bucket(difficulty):
 
 def predict(prompt, embedding_model):
 
+    estimated_input_tokens = len(embedding_model.tokenizer.encode(
+        prompt,
+        add_special_tokens=True,
+    ))
+
     prompt = prompt.strip()
 
     if not prompt:
@@ -69,6 +74,7 @@ def predict(prompt, embedding_model):
     latency_sensitivity = model_latency_sensitivity.predict(prompt_embedding)[0]
 
     result = {
+        "estimated_input_tokens": estimated_input_tokens,
         "task_type": str(task_type),
         "difficulty": float(difficulty),
         "difficulty_bucket": difficulty_to_bucket(float(difficulty)),

@@ -1,6 +1,6 @@
 import pandas as pd
 from pathlib import Path
-from src.adaptive_llm_router.config import DATASET_PATH
+from adaptive_llm_router.config import DATASET_PATH
 
 
 def data_load(dataset_file):

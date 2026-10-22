@@ -1,4 +1,4 @@
-from src.adaptive_llm_router.config import PROCESSED_DIR, RANDOM_STATE, ARTIFACTS_DIR, EMBEDDING_FILE, METADATA_FILE
+from adaptive_llm_router.config import PROCESSED_DIR, RANDOM_STATE, ARTIFACTS_DIR, EMBEDDING_FILE, METADATA_FILE
 from sklearn.model_selection import train_test_split
 from sklearn.linear_model import LogisticRegression
 from sklearn.ensemble import GradientBoostingRegressor

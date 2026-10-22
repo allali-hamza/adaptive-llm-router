@@ -1,5 +1,5 @@
 import joblib
-from src.adaptive_llm_router.config import (
+from adaptive_llm_router.config import (
     PROCESSED_DIR, EMBEDDING_FILE, METADATA_FILE, ARTIFACTS_DIR, EVALUATION_DIR
 )
 import numpy as np

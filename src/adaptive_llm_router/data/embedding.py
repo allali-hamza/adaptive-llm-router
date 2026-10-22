@@ -1,12 +1,11 @@
 import numpy as np
-from sentence_transformers import SentenceTransformer
 
-from src.adaptive_llm_router.config import (
-    EMBEDDING_MODEL,
+from adaptive_llm_router.config import (
     DATASET_PATH,
     PROCESSED_DIR,
 )
-from src.adaptive_llm_router.data.loader import data_load
+from adaptive_llm_router.data.loader import data_load
+from adaptive_llm_router.model.embedding_model import embedding_model
 
 
 def prompt_to_embedding(prompts, embedding_model):
@@ -23,8 +22,6 @@ def generate_dataset_embeddings(dataset_path):
 
     dataset = data_load(dataset_file=dataset_path)
 
-    embedding_model = SentenceTransformer(EMBEDDING_MODEL)
-
     prompts = dataset["prompt"].tolist()
 
     embeddings = prompt_to_embedding(
@@ -37,6 +34,10 @@ def generate_dataset_embeddings(dataset_path):
     output_path = PROCESSED_DIR / f"{dataset_path.stem}_embeddings.npy"
 
     np.save(output_path, embeddings)
+    dataset.to_csv(
+        path_or_buf=PROCESSED_DIR / f"{dataset_path.stem}_metadata.csv",
+    )
+
 
     print(f"Embeddings saved to: {output_path}")
     print(f"Embeddings shape: {embeddings.shape}")
