@@ -17,6 +17,14 @@ class RouteRequest(BaseModel):
     )
 
 
+class RouteResponse(BaseModel):
+    status: str
+    task_type: str
+    difficulty_bucket: str
+    required_quality: float
+
+
+
 if __name__ == "__main__":
 
     case1 = {
