@@ -15,7 +15,7 @@ def routing_function(route_request:RouteRequest) -> RouteResponse:
         "status": 'success',
         "task_type": route_request.task_type,
         "difficulty_bucket": route_request.difficulty_bucket,
-        "required_quality": 'hellooooooooooo',
+        "required_quality": route_request.required_quality,
     }
 
     return result
