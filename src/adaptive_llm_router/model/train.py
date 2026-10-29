@@ -1,6 +1,7 @@
 from adaptive_llm_router.config import PROCESSED_DIR, RANDOM_STATE, ARTIFACTS_DIR, EMBEDDING_FILE, METADATA_FILE
 from sklearn.model_selection import train_test_split
 from sklearn.linear_model import LogisticRegression
+from sklearn.svm import LinearSVC
 from sklearn.ensemble import GradientBoostingRegressor
 from sklearn.ensemble import RandomForestRegressor
 import numpy as np
@@ -157,10 +158,10 @@ def train_models():
     y_latency_sensitivity = df["latency_sensitivity"].to_numpy()
     y_train_latency_sensitivity = y_latency_sensitivity[train_idx]
 
-    model_latency_sensitivity = LogisticRegression(
-        max_iter=1000,
-        random_state=RANDOM_STATE,
+    model_latency_sensitivity = LinearSVC(
+        C=10,
         class_weight="balanced",
+        random_state=RANDOM_STATE,
     )
     print("Training latency_sensitivity...")
     model_latency_sensitivity.fit(
