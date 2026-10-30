@@ -1,0 +1,40 @@
+{
+    "evaluation": {
+        "dataset": "held-out test split",
+        "requests": 522,
+        "baseline_model": "gpt-5.5",
+        "input_token_estimate": "max(1, ceil(prompt character count / 4))",
+        "policy_fallback": "gpt-5.5",
+        "note": "Quality and cost are estimated from the seed capability table. This evaluates routing decisions, not live model outputs."
+    },
+    "always_premium": {
+        "requests": 522,
+        "quality_threshold_met_rate": 0.6819923371647509,
+        "mean_capability_quality": 0.9263218390804598,
+        "mean_estimated_cost_usd": 0.005765263409961686,
+        "total_estimated_cost_usd": 3.0094675
+    },
+    "cost_first_policy": {
+        "requests": 522,
+        "quality_threshold_met_rate": 0.685823754789272,
+        "mean_capability_quality": 0.8825478927203065,
+        "mean_estimated_cost_usd": 0.003626819722222222,
+        "total_estimated_cost_usd": 1.893199895
+    },
+    "cost_savings": {
+        "usd": 1.116267605,
+        "percent": 37.09186442452028
+    },
+    "policy_selection": {
+        "eligible_request_rate": 0.685823754789272,
+        "models": {
+            "llama-4-maverick": 77,
+            "gemini-3.1-pro-preview": 75,
+            "deepseek-r1": 68,
+            "gpt-5.4-mini": 66,
+            "gpt-5.4-nano": 42,
+            "gpt-5.5": 28,
+            "claude-opus-4.7": 2
+        }
+    }
+}
