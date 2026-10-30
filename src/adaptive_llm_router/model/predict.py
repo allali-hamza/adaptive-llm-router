@@ -17,16 +17,16 @@ model_required_quality = joblib.load(
     ARTIFACTS_DIR / "required_quality.joblib"
 )   
 
-model_risk_level = joblib.load(
-    ARTIFACTS_DIR / "risk_level.joblib"
-)
-
 model_expected_output_tokens = joblib.load(
     ARTIFACTS_DIR / "expected_output_tokens.joblib"
 )
 
 model_latency_sensitivity = joblib.load(
     ARTIFACTS_DIR / "latency_sensitivity.joblib"
+)
+
+latency_scaler = joblib.load(
+    ARTIFACTS_DIR / "latency_sensitivity_scaler.joblib"
 )
 
 
@@ -64,14 +64,14 @@ def predict(prompt, embedding_model):
         1.0,
     )
 
-    risk_level = model_risk_level.predict(prompt_embedding)[0]
-    
     expected_output_tokens = max(
         0, 
         round(model_expected_output_tokens.predict(prompt_embedding)[0])
     )
 
-    latency_sensitivity = model_latency_sensitivity.predict(prompt_embedding)[0]
+    latency_sensitivity = model_latency_sensitivity.predict(
+        latency_scaler.transform(prompt_embedding)
+    )[0]
 
     result = {
         "estimated_input_tokens": estimated_input_tokens,
@@ -79,7 +79,6 @@ def predict(prompt, embedding_model):
         "difficulty": float(difficulty),
         "difficulty_bucket": difficulty_to_bucket(float(difficulty)),
         "required_quality": float(required_quality),
-        "risk_level": str(risk_level),
         "expected_output_tokens": int(expected_output_tokens),
         "latency_sensitivity": str(latency_sensitivity),
     }

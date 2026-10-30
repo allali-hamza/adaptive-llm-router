@@ -38,16 +38,16 @@ model_required_quality = joblib.load(
     ARTIFACTS_DIR / "required_quality.joblib"
 )
 
-model_risk_level = joblib.load(
-    ARTIFACTS_DIR / "risk_level.joblib"
-)
-
 model_expected_output_tokens = joblib.load(
     ARTIFACTS_DIR / "expected_output_tokens.joblib"
 )
 
 model_latency_sensitivity = joblib.load(
     ARTIFACTS_DIR / "latency_sensitivity.joblib"
+)
+
+latency_scaler = joblib.load(
+    ARTIFACTS_DIR / "latency_sensitivity_scaler.joblib"
 )
 
 
@@ -64,11 +64,6 @@ y_difficulty = (
 
 y_required_quality = (
     metadata["required_quality"]
-    .to_numpy()[test_idx]
-)
-
-y_risk_level = (
-    metadata["risk_level"]
     .to_numpy()[test_idx]
 )
 
@@ -179,13 +174,6 @@ results["required_quality"] = evaluate_regression(
     model_name="required_quality",
 )
 
-results["risk_level"] = evaluate_classification(
-    model=model_risk_level,
-    X_test=X_test,
-    y_test=y_risk_level,
-    model_name="risk_level",
-)
-
 results["expected_output_tokens"] = evaluate_regression(
     model=model_expected_output_tokens,
     X_test=X_test,
@@ -195,7 +183,7 @@ results["expected_output_tokens"] = evaluate_regression(
 
 results["latency_sensitivity"] = evaluate_classification(
     model=model_latency_sensitivity,
-    X_test=X_test,
+    X_test=latency_scaler.transform(X_test),
     y_test=y_latency_sensitivity,
     model_name="latency_sensitivity",
 )

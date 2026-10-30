@@ -2,6 +2,7 @@ from adaptive_llm_router.config import PROCESSED_DIR, RANDOM_STATE, ARTIFACTS_DI
 from sklearn.model_selection import train_test_split
 from sklearn.linear_model import LogisticRegression
 from sklearn.svm import LinearSVC
+from sklearn.preprocessing import StandardScaler
 from sklearn.ensemble import GradientBoostingRegressor
 from sklearn.ensemble import RandomForestRegressor
 import numpy as np
@@ -112,27 +113,6 @@ def train_models():
     )
 
 
-    # risk_level
-    y_risk_level = df["risk_level"].to_numpy()
-    y_train_risk_level = y_risk_level[train_idx]
-
-    model_risk_level = LogisticRegression(
-        max_iter=1000,
-        random_state=RANDOM_STATE,
-        class_weight="balanced"
-    )
-    print("Training risk_level...")
-    model_risk_level.fit(
-        X_train,
-        y_train_risk_level,
-    )
-
-    joblib.dump(
-        model_risk_level,
-        ARTIFACTS_DIR / "risk_level.joblib",
-    )
-
-
     # expected_output_tokens
     y_expected_output_tokens = df["expected_output_tokens"].to_numpy()
     y_train_expected_output_tokens = y_expected_output_tokens[train_idx]
@@ -153,19 +133,26 @@ def train_models():
         ARTIFACTS_DIR / "expected_output_tokens.joblib",
     )
 
-
     # latency_sensitivity
     y_latency_sensitivity = df["latency_sensitivity"].to_numpy()
     y_train_latency_sensitivity = y_latency_sensitivity[train_idx]
 
+    latency_scaler = StandardScaler()
+    X_train_latency = latency_scaler.fit_transform(X_train)
+
+    joblib.dump(
+        latency_scaler,
+        ARTIFACTS_DIR / "latency_sensitivity_scaler.joblib",
+    )
+
     model_latency_sensitivity = LinearSVC(
-        C=10,
+        C=0.1,
         class_weight="balanced",
         random_state=RANDOM_STATE,
     )
     print("Training latency_sensitivity...")
     model_latency_sensitivity.fit(
-        X_train,
+        X_train_latency,
         y_train_latency_sensitivity,
     )
 
